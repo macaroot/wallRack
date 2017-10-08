@@ -33,112 +33,115 @@ Racks currently consist of 128 shelfs, which hold decimal values.
 
 ### Operators:
 
-Values held by shelves are decimal, but hexadecimals can be used to input values, to ease the need for multidigit instructions. Increments rack.
 ```
 0 1 2 3 4 5 6 7 8 9 a b c d e f
 
   :: r[i] = O; ++i
 ```
+Values held by shelves are decimal, but hexadecimals can be used to input values, to ease the need for multidigit instructions. Increments rack.
 
-Get current index of wall / previous index of wall / current index of rack. Increments rack.
 ```
 # ~ @
 
   :: r[i] = O; ++i
 ```
+Get current index of wall / previous index of wall / current index of rack. Increments rack.
 
-Basic mathematical operators, which combine the two shelves. Decrements rack.
 ```
 + - * / %
 
   :: r[i-1] = r[i] O r[i-1]; --i
 ```
+Basic mathematical operators, which combine the two shelves. Decrements rack.
 
-Logical not, returns boolean.
 ```
 !
 
   :: r[i] = O r[i]
 ```
+Logical not, returns boolean.
 
-Logical operators for two shelves: and / or / xor. Returns boolean. Decrements rack.
 ```
 & | ^
 
   :: r[i-1] = r[i] O r[i-1]; --i
 ```
+Logical operators for two shelves: and / or / xor. Returns boolean. Decrements rack.
 
 
-Comparison of two shelves: equals / lesser greater /
-returns boolean. Decrements rack.
 ```
 = < >	-
 
   :: r[i-1] = r[i] O r[i-1]; --i
 ```
+Comparison of two shelves: equals / lesser greater /
+returns boolean. Decrements rack.
 
-Duplicate shelf's contents. Increments rack.
 ```
 :
   :: r[i+1] = r[i]; ++i
 ```
+Duplicate shelf's contents. Increments rack.
 
-Clear a shelf. Decrements rack.
 ```
 .
 
   :: r[i] = 0; --i
 ```
+Clear a shelf. Decrements rack.
 
-Move on the wall and optionally carry values from multiple shelves. If first shelf is 0, nothing is carried. Decrements the two options used by the operator from the rack, and also decrements the amount of shelves you took. Increments the rack you go to by the amount of shelves you took.
-```
 $
 
   :: r[i] : How many items down the rack you will carry;
   :: r[i-1] : To which rack you go to;
 ```
+Move on the wall and optionally carry values from multiple shelves. If first shelf is 0, nothing is carried. Decrements the two options used by the operator from the rack, and also decrements the amount of shelves you took. Increments the rack you go to by the amount of shelves you took.
+```
 
-Reverses the order of shelves, the amount is specified with an option. Decrements rack.
 ```
 \
 
   :: r[i] : How many shelves do you reorder;
 ```
+Reverses the order of shelves, the amount is specified with an option. Decrements rack.
 
-Loop which starts if shelf is not 0, and stops if shelf is
-0 when end bracket is reached.
 ```
 [ ]
 ```
+Loop which starts if shelf is not 0, and stops if shelf is
+0 when end bracket is reached.
 
-Ternary switch. If shelf is 0 the left side of _ operator is executed, right side will be skipped, and vice versa if shelf not 0. Decrements rack.
 ```
 { } _
 
   :: r[i] = 0; --i
 ```
+Ternary switch. If shelf is 0 the left side of _ operator is executed, right side will be skipped, and vice versa if shelf not 0. Decrements rack.
 
-Print shelf as ASCII. Decrements rack.
 ```
 "
+
   :: OUTPUT = r[i]; r[i] = 0; --i
 ```
+Print shelf as ASCII. Decrements rack.
 
-Ask for ASCII input. Increments rack.
 ```
 '
+
   :: r[i] = INPUT; ++i
 ```
+Ask for ASCII input. Increments rack.
 
-Print decimal value. Decrements rack.
 ```
 '
 
   :: OUTPUT = r[i]; r[i] = 0; --i
 ```
+Print decimal value. Decrements rack.
 
-Generates random number from 0 to option.
 ```
 ?
+
   :: r[i] = rand( 0 - r[i] );
 ```
+Generates random number from 0 to option.
