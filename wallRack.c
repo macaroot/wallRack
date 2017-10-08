@@ -1,4 +1,4 @@
-/* wallRack
+/*{{{*//* wallRack
  * Simple language that consists of an array of stacks, which are manipulated
  * tediously with 44 single character operators.
  *
@@ -50,7 +50,7 @@
  * 		boolean. Decrements rack.
  * 	:: r[i-1] = r[i] O r[i-1]; --i
  *
- * = < >	Comparison of two shelves: equals / lesser greater /
+ * = < >	Comparison of two shelves: equals / lesser / greater /
  * 		returns boolean. Decrements rack.
  * 	:: r[i-1] = r[i] O r[i-1]; --i
  *
@@ -91,7 +91,7 @@
  *
  * ?		Generates random number from 0 to option.
  * 	:: r[i] = rand( 0 - r[i] );
- */
+ *//*}}}*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
