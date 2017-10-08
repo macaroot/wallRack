@@ -30,9 +30,9 @@
  * .    .    .    .    .    .    .    .    .    .    .     .     ...
  *
  * Operators:
- * 0 - f	- Values held by shelves are decimal, but hexadecimals can
- * 		be used to input values, to ease the need for multidigit
- * 		instructions. Increments rack.
+ * 0 1 2 3 4 5	- Values held by shelves are decimal, but hexadecimals can
+ * 6 7 8 9 a b	be used to input values, to ease the need for multidigit
+ * c d e f	instructions. Increments rack.
  * 	:: r[i] = O; ++i
  *
  * # ~ @	- Get current index of wall / previous index of wall / current
