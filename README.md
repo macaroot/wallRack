@@ -90,13 +90,14 @@ Duplicate shelf's contents. Increments rack.
 ```
 Clear a shelf. Decrements rack.
 
+
+```
 $
 
   :: r[i] : How many items down the rack you will carry;
   :: r[i-1] : To which rack you go to;
 ```
 Move on the wall and optionally carry values from multiple shelves. If first shelf is 0, nothing is carried. Decrements the two options used by the operator from the rack, and also decrements the amount of shelves you took. Increments the rack you go to by the amount of shelves you took.
-```
 
 ```
 \
