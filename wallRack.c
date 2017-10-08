@@ -30,37 +30,37 @@
  * .    .    .    .    .    .    .    .    .    .    .     .     ...
  *
  * Operators:
- * 0 1 2 3 4 5	- Values held by shelves are decimal, but hexadecimals can
+ * 0 1 2 3 4 5	Values held by shelves are decimal, but hexadecimals can
  * 6 7 8 9 a b	be used to input values, to ease the need for multidigit
  * c d e f	instructions. Increments rack.
  * 	:: r[i] = O; ++i
  *
- * # ~ @	- Get current index of wall / previous index of wall / current
+ * # ~ @	Get current index of wall / previous index of wall / current
  * 		index of rack. Increments rack.
  * 	:: r[i] = O; ++i
  *
- * + - * / %	- Basic mathematical operators, which combine the two shelves.
+ * + - * / %	Basic mathematical operators, which combine the two shelves.
  * 		Decrements rack.
  * 	:: r[i-1] = r[i] O r[i-1]; --i
  *
- * !		- Logical not, returns boolean.
+ * !		Logical not, returns boolean.
  * 	:: r[i] = O r[i]
  *
- * & | ^	- Logical operators for two shelves: and / or / xor. Returns
+ * & | ^	Logical operators for two shelves: and / or / xor. Returns
  * 		boolean. Decrements rack.
  * 	:: r[i-1] = r[i] O r[i-1]; --i
  *
- * = < >	- Comparison of two shelves: equals / lesser greater /
+ * = < >	Comparison of two shelves: equals / lesser greater /
  * 		returns boolean. Decrements rack.
  * 	:: r[i-1] = r[i] O r[i-1]; --i
  *
- * :		- Duplicate shelf's contents. Increments rack.
+ * :		Duplicate shelf's contents. Increments rack.
  * 	:: r[i+1] = r[i]; ++i
  *
- * .		- Clear a shelf. Decrements rack.
+ * .		Clear a shelf. Decrements rack.
  * 	:: r[i] = 0; --i
  *
- * $		- Move on the wall and optionally carry values from multiple
+ * $		Move on the wall and optionally carry values from multiple
  * 		shelves. If first shelf is 0, nothing is carried. Decrements
  * 		the two options used by the operator from the rack, and also
  * 		decrements the amount of shelves you took. Increments the rack
@@ -68,28 +68,28 @@
  * 	:: r[i] : How many items down the rack you will carry;
  * 	:: r[i-1] : To which rack you go to;
  *
- * \		- Reverses the order of shelves, the amount is specified with
+ * \		Reverses the order of shelves, the amount is specified with
  * 		an option. Decrements rack.
  * 	:: r[i] : How many shelves do you reorder;
  *
- * [ ]		- Loop which starts if shelf is not 0, and stops if shelf is
+ * [ ]		Loop which starts if shelf is not 0, and stops if shelf is
  * 		0 when end bracket is reached.
  *
- * { } _	- Ternary switch. If shelf is 0 the left side of _ operator is
+ * { _ }	Ternary switch. If shelf is 0 the left side of _ operator is
  * 		executed, right side will be skipped, and vice versa if shelf
  * 		not 0. Decrements rack.
  * 	:: r[i] = 0; --i
  *
- * "		- Print shelf as ASCII. Decrements rack.
+ * "		Print shelf as ASCII. Decrements rack.
  * 	:: OUTPUT = r[i]; r[i] = 0; --i
  *
- * '		- Ask for ASCII input. Increments rack.
+ * '		Ask for ASCII input. Increments rack.
  * 	:: r[i] = INPUT; ++i
  *
- * '		- Print decimal value. Decrements rack.
+ * '		Print decimal value. Decrements rack.
  * 	:: OUTPUT = r[i]; r[i] = 0; --i
  *
- * ?		= Generates random number from 0 to option.
+ * ?		Generates random number from 0 to option.
  * 	:: r[i] = rand( 0 - r[i] );
  */
 #include <stdio.h>

@@ -113,7 +113,7 @@ Loop which starts if shelf is not 0, and stops if shelf is
 0 when end bracket is reached.
 
 ```
-{ } _
+{ _ }
 
   :: r[i] = 0; --i
 ```
