@@ -1,0 +1,44 @@
+; Different ways to do punctuated and capitalized 'Hello world'
+;
+; Output:
+; Hello, world!
+
+; Basic way using stringform, rackwide reverse and rackwide loop print
+(Hello, World!) @\["]
+
+a"
+; Methods that don't use stringform
+; Brute force
+3b* aa* 9c* ab*4+ ab*1+ 8b*1- 2f*2+ 4b* ab*1+ 9c* 9c* aa*1+ 6c*"""""""""""""
+
+a"
+; Brute force with single rack limited loop print (limited if other than @ is used as counter)
+3b* aa* 9c* ab*4+ ab*1+ 8b*1- 2f*2+ 4b* ab*1+ 9c* 9c* aa*1+ 6c*
+@ [
+	2\" 1-
+]
+
+a"
+; Brute force with rack swap limited loop print (limited if other than @ is used as counter)
+3b* aa* 9c* ab*4+ ab*1+ 8b*1- 2f*2+ 4b* ab*1+ 9c* 9c* aa*1+ 6c*
+@ 11$[
+	~0$
+	" ~0$
+	1-
+]
+
+a" 00$
+; Using close patterns and having breakpoints in ascii be at 8's
+89*" 8d*:: 3-" 4+:"" 7+" 84*: c+"" 8b*1-" 8e*::: 1-" 2+" 4-" c-" 84* 1+"
+
+a"
+; Using different racks for close characters
+86* 10$
+8a* 20$
+8e* 10$
+:8-" 20$
+::: b-"4-:""1-" 00$
+: 4-:" c-" 10$
+: 7+" 20$
+::: 1-" 2+" 4-" c-" 00$
+: f-"

@@ -1,5 +1,8 @@
 *
+.*
 !.gitignore
 !wallRack.c
 !README.md
-!programs/*
+!/programs
+!/programs/*
+/programs/.*
