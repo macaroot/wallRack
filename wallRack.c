@@ -1,6 +1,6 @@
 /*{{{*//* wallRack
  * Simple language that consists of an array of stacks, which are manipulated
- * tediously with 44 single character operators.
+ * tediously with 47 single character operators.
  *
  * You can use a three digit number as an option, and it will show a snapshot
  * (with racks cut to 16 height) of the internal values.
@@ -14,22 +14,25 @@
  * shelf	- Racks currently consist of 128 shelfs, which hold decimal
  * 		values.
  *
- * w[0] w[1] w[2] w[3] w[4] w[5] w[6] w[7] w[8] w[9] w[10] w[11] ...
- * r[0] r[0] r[0] r[0] r[0] r[0] r[0] r[0] r[0] r[0] r[0]  r[0]  ...
- * r[1] r[1] r[1] r[1] r[1] r[1] r[1] r[1] r[1] r[1] r[1]  r[1]  ...
- * r[2] r[2] r[2] r[2] r[2] r[2] r[2] r[2] r[2] r[2] r[2]  r[2]  ...
- * r[3] r[3] r[3] r[3] r[3] r[3] r[3] r[3] r[3] r[3] r[3]  r[3]  ...
- * r[4] r[4] r[4] r[4] r[4] r[4] r[4] r[4] r[4] r[4] r[4]  r[4]  ...
- * r[5] r[5] r[5] r[5] r[5] r[5] r[5] r[5] r[5] r[5] r[5]  r[5]  ...
- * r[6] r[6] r[6] r[6] r[6] r[6] r[6] r[6] r[6] r[6] r[6]  r[6]  ...
- * r[7] r[7] r[7] r[7] r[7] r[7] r[7] r[7] r[7] r[7] r[7]  r[7]  ...
- * r[8] r[8] r[8] r[8] r[8] r[8] r[8] r[8] r[8] r[8] r[8]  r[8]  ...
+ * .    .    .    .    .    .    .    .    .    .    .     .     ...
+ * .    .    .    .    .    .    .    .    .    .    .     .     ...
+ * .    .    .    .    .    .    .    .    .    .    .     .     ...
  * r[9] r[9] r[9] r[9] r[9] r[9] r[9] r[9] r[9] r[9] r[9]  r[9]  ...
- * .    .    .    .    .    .    .    .    .    .    .     .     ...
- * .    .    .    .    .    .    .    .    .    .    .     .     ...
- * .    .    .    .    .    .    .    .    .    .    .     .     ...
+ * r[8] r[8] r[8] r[8] r[8] r[8] r[8] r[8] r[8] r[8] r[8]  r[8]  ...
+ * r[7] r[7] r[7] r[7] r[7] r[7] r[7] r[7] r[7] r[7] r[7]  r[7]  ...
+ * r[6] r[6] r[6] r[6] r[6] r[6] r[6] r[6] r[6] r[6] r[6]  r[6]  ...
+ * r[5] r[5] r[5] r[5] r[5] r[5] r[5] r[5] r[5] r[5] r[5]  r[5]  ...
+ * r[4] r[4] r[4] r[4] r[4] r[4] r[4] r[4] r[4] r[4] r[4]  r[4]  ...
+ * r[3] r[3] r[3] r[3] r[3] r[3] r[3] r[3] r[3] r[3] r[3]  r[3]  ...
+ * r[2] r[2] r[2] r[2] r[2] r[2] r[2] r[2] r[2] r[2] r[2]  r[2]  ...
+ * r[1] r[1] r[1] r[1] r[1] r[1] r[1] r[1] r[1] r[1] r[1]  r[1]  ...
+ * r[0] r[0] r[0] r[0] r[0] r[0] r[0] r[0] r[0] r[0] r[0]  r[0]  ...
+ * w[0] w[1] w[2] w[3] w[4] w[5] w[6] w[7] w[8] w[9] w[10] w[11] ...
+ *
  *
  * Operators:
+ * ;		Linecomment.
+ *
  * 0 1 2 3 4 5	Values held by shelves are decimal, but hexadecimals can
  * 6 7 8 9 a b	be used to input values, to ease the need for multidigit
  * c d e f	instructions. Increments rack.
@@ -41,20 +44,20 @@
  *
  * + - * / %	Basic mathematical operators, which combine the two shelves.
  * 		Decrements rack.
- * 	:: r[i-1] = r[i] O r[i-1]; --i
+ * 	:: r[i-1] = r[i] O r[i-1]; r[i] = 0; --i
  *
  * !		Logical not, returns boolean.
  * 	:: r[i] = O r[i]
  *
  * & | ^	Logical operators for two shelves: and / or / xor. Returns
  * 		boolean. Decrements rack.
- * 	:: r[i-1] = r[i] O r[i-1]; --i
+ * 	:: r[i-1] = r[i] O r[i-1]; r[i] = 0; --i
  *
  * = < >	Comparison of two shelves: equals / lesser / greater /
  * 		returns boolean. Decrements rack.
- * 	:: r[i-1] = r[i] O r[i-1]; --i
+ * 	:: r[i-1] = r[i] O r[i-1]; r[i] = 0; --i
  *
- * :		Duplicate shelf's contents. Increments rack.
+ * :		Duplicate a shelf. Increments rack.
  * 	:: r[i+1] = r[i]; ++i
  *
  * .		Clear a shelf. Decrements rack.
@@ -73,12 +76,23 @@
  * 	:: r[i] : How many shelves do you reorder;
  *
  * [ ]		Loop which starts if shelf is not 0, and stops if shelf is
- * 		0 when end bracket is reached.
+ * 		0 when end bracket is reached. If below rack, start and end are
+ * 		entirely ignored. Decrements rack when exciting loop.
+ * 	:: at [ if r[i] == 0 or r[-1], go to corresponding ]
+ * 	:: at ] if r[i] == 0, --i
+ * 	:: at ] if r[i] != 0, go back to corresponding [
+ * 	:: at ] if r[-1], do nothing
  *
  * { _ }	Ternary switch. If shelf is 0 the left side of _ operator is
  * 		executed, right side will be skipped, and vice versa if shelf
- * 		not 0. Decrements rack.
- * 	:: r[i] = 0; --i
+ * 		not 0. Entering decrements rack. If below rack, both sides are
+ * 		ignored. This behavior makes it a pseudo quarternary switch.
+ * 	:: at { if r[i] == 0; --i
+ * 	:: at { if r[i] != 0, r[i] = 0, go to corresponding _; --i
+ * 	:: at { if r[-i], go to corresponding }
+ * 	:: at _ go to corresponding };
+ *
+ * ( )		Stringform. Puts ASCII into shelves sequentially.
  *
  * "		Print shelf as ASCII. Decrements rack.
  * 	:: OUTPUT = r[i]; r[i] = 0; --i
@@ -99,8 +113,8 @@
 int EJECT = 0;
 const int WIDTH = 0x10;
 const int HEIGHT = 0x80;
-char RAWARR[0x80];
-char TOKARR[0x80];
+char RAWARR[0x1000];
+char TOKARR[0x1000];
 int CURR;
 int PREV;
 int STEP;
@@ -119,10 +133,16 @@ void output( void )
 {/*{{{*/
 	int i;
 	int j;
-	printf( "\n" );
-	for( i = 0; i < 10; i++ )
+	int size = 0x10;
+	printf( "\n\n" );
+	for( j = 0; j < WIDTH; j ++)
 	{
-		if( i == 0 )
+		printf( "========", wall[j].shelf );
+	};
+	printf( "\n" );
+	for( i = size; i > -2; i-- )
+	{
+		if( i < 0 )
 		{
 			for( j = 0; j < WIDTH; j ++)
 			{
@@ -152,24 +172,23 @@ void output( void )
 			};
 			printf( "\n" );
 		}
-		for( j = 0; j < WIDTH; j++ )
+		else
 		{
-			if( ( j == CURR ) && ( i == wall[CURR].shelf ) )
+			for( j = 0; j < WIDTH; j++ )
 			{
-				printf( "%i <\t", wall[j].rack[i] );
+				if( ( j == CURR ) && ( i == wall[CURR].shelf ) )
+				{
+					printf( "%i <\t", wall[j].rack[i] );
+				}
+				else
+				{
+					printf( "%i\t", wall[j].rack[i] );
+				}
 			}
-			else
-			{
-				printf( "%i\t", wall[j].rack[i] );
-			}
+			printf( "\n" );
 		}
-		printf( "\n" );
 	}
-	for( j = 0; j < WIDTH; j ++)
-	{
-		printf( "========", wall[j].shelf );
-	};
-	printf( "\n\n" );
+	printf( "\n" );
 }/*}}}*/
 
 void run( void )
@@ -779,7 +798,7 @@ during token #%i : \\. Lapse: %i\n", CURR, STEP, LAPSE );
 during token #%i : [ . Lapse: %i\n", CURR, STEP, LAPSE );
 					EJECT = 1;
 				}
-				else if( wall[CURR].rack[wall[CURR].shelf] == 0 )
+				else if( ( wall[CURR].rack[wall[CURR].shelf] == 0 ) || ( wall[CURR].shelf < 0 ) )
 				{
 					int b;
 					int bt;
@@ -816,13 +835,14 @@ during token #%i : [ . Lapse: %i\n", CURR, b, LAPSE );
 				}
 				break;/*}}}*/
 			case ']' :
-				if( wall[CURR].shelf < 0 )/*{{{*/
+				if( wall[CURR].shelf < 0 )
 				{
-					printf( "\nError: Rack bottom exceeded at rack %i, \
-during token #%i : ] . Lapse: %i\n", CURR, STEP, LAPSE );
-					EJECT = 1;
 				}
-				else if( wall[CURR].rack[wall[CURR].shelf] != 0 )
+				else if( wall[CURR].rack[wall[CURR].shelf] == 0 )
+				{
+					--wall[CURR].shelf;
+				}
+				else
 				{
 					int b;
 					int bt;
@@ -835,7 +855,11 @@ during token #%i : ] . Lapse: %i\n", CURR, STEP, LAPSE );
 					while( out == 0 && EJECT == 0 )
 					{
 						--STEP;
-						if( STEP < 0 )
+						if( wall[CURR].shelf < 0 )
+						{
+							out = 1;
+						}
+						else if( STEP < 0 )
 						{
 							printf( "\nError: Error: Loop start was not found at rack %i, \
 during token #%i : ] . Lapse: %i\n", CURR, b, LAPSE );
@@ -860,15 +884,45 @@ during token #%i : ] . Lapse: %i\n", CURR, b, LAPSE );
 				}
 				break;/*}}}*/
 			case '{' :
-				if( wall[CURR].shelf < 0 )/*{{{*/
-				{
-					printf( "\nError: Rack bottom exceeded at rack %i, \
-during token #%i : { . Lapse: %i\n", CURR, STEP, LAPSE );
-					EJECT = 1;
-				}
-				else if( wall[CURR].rack[wall[CURR].shelf] == 0 )
+				if( wall[CURR].rack[wall[CURR].shelf] == 0 )/*{{{*/
 				{
 					--wall[CURR].shelf;
+				}
+				else if( wall[CURR].shelf < 0 )
+				{
+					int b;
+					int bt;
+					int out;
+					int tern;
+					b = STEP;
+					bt = TOKARR[STEP];
+					out = 0;
+					tern = 1;
+					wall[CURR].rack[wall[CURR].shelf] = 0;
+					--wall[CURR].shelf;
+					while( out == 0 )
+					{
+						++STEP;
+						if( TOKARR[STEP] == '\0' )
+						{
+							printf( "\nError: Error: ternary end was not found at rack %i, \
+during token #%i : ] . Lapse: %i\n", CURR, b, LAPSE );
+							EJECT = 1;
+							out = 1;
+						}
+						else if( TOKARR[STEP] == '{' )
+						{
+							++tern;
+						}
+						else if( TOKARR[STEP] == '}' )
+						{
+							--tern;
+							if( tern == 0 )
+							{
+								out = 1;
+							}
+						}
+					}
 				}
 				else
 				{
@@ -885,7 +939,14 @@ during token #%i : { . Lapse: %i\n", CURR, STEP, LAPSE );
 					while( out == 0 )
 					{
 						++STEP;
-						if( TOKARR[STEP] == '{' )
+						if( TOKARR[STEP] == '\0' )
+						{
+							printf( "\nError: Error: ternary end was not found at rack %i, \
+during token #%i : ] . Lapse: %i\n", CURR, b, LAPSE );
+							EJECT = 1;
+							out = 1;
+						}
+						else if( TOKARR[STEP] == '{' )
 						{
 							++tern;
 						}
@@ -945,6 +1006,43 @@ during token #%i : } . Lapse: %i\n", CURR, b, LAPSE );
 					}
 				}
 				break;/*}}}*/
+			case '(' :
+				if( 1 )/*{{{*/
+				{
+					int b;
+					int out;
+					out = 0;
+					b = STEP;
+					while( out == 0 )
+					{
+						++STEP;
+						if( TOKARR[STEP] == '\0' )
+						{
+							printf( "\nError: String end was not found at rack %i, \
+during token #%i : ( . Lapse: %i\n", CURR, b, LAPSE );
+							EJECT = 1;
+							out = 1;
+						}
+						else if( TOKARR[STEP] == ')' )
+						{
+							out = 1;
+						}
+						else
+						{
+							++wall[CURR].shelf;
+							wall[CURR].rack[wall[CURR].shelf] = TOKARR[STEP];
+						}
+					}
+				}
+				break;/*}}}*/
+			case ')' :
+				if( 1 )
+				{
+					printf( "\nError: String start was not found at rack %i, \
+during token #%i : ) . Lapse: %i\n", CURR, STEP, LAPSE );
+					EJECT = 1;
+				}
+				break;
 			case '\'' :
 				if( wall[CURR].shelf > ( HEIGHT - 2 ) )/*{{{*/
 				{
@@ -1031,7 +1129,6 @@ void init( void )
 	CURR = 0;
 	PREV = 0;
 	LAPSE = 0;
-	SNAP = -1;
 	int i;
 	for( i = 0; i < WIDTH; i++ )
 	{
@@ -1049,18 +1146,44 @@ void tokenize( void )
 	int i = 0;
 	int j = 0;
 	int leap;
-	int dev = 1;
-	while( RAWARR[i] != 0 )
+	int dev;
+	while( RAWARR[i] != '\0' )
 	{
 		leap = 1;
+		dev = 1;
 		if( RAWARR[i] == ';' )
 		{
-			while( RAWARR[i + dev] != '\n' )
+			while( ( RAWARR[i + dev] != '\n' ) && ( RAWARR[i + dev] != '\0' ) )
 			{
 				++leap;
 				++dev;
 			}
 			++leap;
+			dev = 1;
+		}
+		else if( RAWARR[i] == '(' )
+		{
+			TOKARR[j] = '(';
+			while( RAWARR[i + dev] != ')' )
+			{
+				if( RAWARR[i + dev] == '\0' )
+				{
+					printf( "\nError: String end was not found while tokenizing file.\n" );
+					EJECT = 1;
+				}
+				else
+				{
+					++j;
+					TOKARR[j] = RAWARR[i + dev];
+					++leap;
+					++dev;
+				}
+			}
+			++j;
+			TOKARR[j] = ')';
+			++j;
+			++leap;
+			dev = 1;
 		}
 		else if( RAWARR[i] == '0' || RAWARR[i] == '1' ||
 		         RAWARR[i] == '2' || RAWARR[i] == '3' ||
@@ -1106,12 +1229,13 @@ void parse( FILE* file )
 	{
 		RAWARR[i] = c;
 		++i;
-		if( i > 0x80 && i != EOF )
+		if( i > 0x1000 && c != EOF )
 		{
-			printf( "\nError: The file was too long, maximum character length is 0x80\n" );
+			printf( "\nError: The file was too long, maximum character length is 0x1000\n" );
 			EJECT = 1;
 		}
 	}
+	RAWARR[i] = '\0';
 	fclose( file );
 }/*}}}*/
 
@@ -1124,6 +1248,7 @@ int main( int argc, void* argv[] )
 	}
 	else
 	{
+		SNAP = -1;
 		if( argc == 3 )
 		{
 			char* snapString = argv[2];
