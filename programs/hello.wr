@@ -19,9 +19,11 @@ a"
 ]
 
 a"
-; Brute force with rack swap limited loop print (limited if other than @ is used as counter)
+; Brute force with rack swap and limited loop print (limit differs from rackwide if execution starts somewhere other than bottom of rack)
+@ 11$
+~0$
 3b* aa* 9c* ab*4+ ab*1+ 8b*1- 2f*2+ 4b* ab*1+ 9c* 9c* aa*1+ 6c*
-@ 11$[
+@ 11$ 2\-[
 	~0$
 	" ~0$
 	1-
