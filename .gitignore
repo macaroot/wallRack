@@ -1,8 +1,8 @@
 *
 .*
 !.gitignore
-!wallRack.c
+!wRinterp.c
 !README.md
-!/programs
-!/programs/*
-/programs/.*
+!/wRprograms
+!/wRprograms/*
+/wRprograms/.*
