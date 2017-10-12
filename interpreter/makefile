@@ -1,5 +1,3 @@
-# the compiler: gcc for C, g++ for C++
-# CC = g++
 CC = gcc
 
 SRCDIR = src
@@ -10,11 +8,7 @@ TARGET = bin/wRinterp
 SOURCES = $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 OBJECTS = $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
 
-# compiler flags
-# -g adds debugging information to the executable file
-# -Wall turns on most, but not all, compiler warnings
 CFLAGS = -g -Wall -ansi -pedantic
-# includes and libs
 HEAD = -Iinclude
 
 $(TARGET): $(OBJECTS)
