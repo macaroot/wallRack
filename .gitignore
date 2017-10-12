@@ -1,7 +1,12 @@
 *
 .*
 !.gitignore
-!wRinterp.c
+!/interpreter
+!/interpreter/makefile
+!/interpreter/src
+!/interpreter/include
+!/interpreter/src/*.c
+!/interpreter/include/*.h
 !README.md
 !/wRprograms
 !/wRprograms/*
