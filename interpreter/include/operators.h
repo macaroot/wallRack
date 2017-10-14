@@ -1,52 +1,34 @@
-#include "main.h"
-
 #ifndef OPERATORS_H
 #define OPERATORS_H
 
 /* wallRack operators */
-void op_insert_zero(struct Wall *wall, struct Rack **racks);
-void op_insert_one(struct Wall *wall, struct Rack **racks);
-void op_insert_two(struct Wall *wall, struct Rack **racks);
-void op_insert_three(struct Wall *wall, struct Rack **racks);
-void op_insert_four(struct Wall *wall, struct Rack **racks);
-void op_insert_five(struct Wall *wall, struct Rack **racks);
-void op_insert_six(struct Wall *wall, struct Rack **racks);
-void op_insert_seven(struct Wall *wall, struct Rack **racks);
-void op_insert_eight(struct Wall *wall, struct Rack **racks);
-void op_insert_nine(struct Wall *wall, struct Rack **racks);
-void op_insert_a(struct Wall *wall, struct Rack **racks);
-void op_insert_b(struct Wall *wall, struct Rack **racks);
-void op_insert_c(struct Wall *wall, struct Rack **racks);
-void op_insert_d(struct Wall *wall, struct Rack **racks);
-void op_insert_e(struct Wall *wall, struct Rack **racks);
-void op_insert_f(struct Wall *wall, struct Rack **racks);
-void op_insert_cur(struct Wall *wall, struct Rack **racks);
-void op_insert_pre(struct Wall *wall, struct Rack **racks);
-void op_insert_ind(struct Wall *wall, struct Rack **racks);
-void op_add(struct Wall *wall, struct Rack **racks);
-void op_sub(struct Wall *wall, struct Rack **racks);
-void op_mult(struct Wall *wall, struct Rack **racks);
-void op_div(struct Wall *wall, struct Rack **racks);
-void op_mod(struct Wall *wall, struct Rack **racks);
-void op_not(struct Wall *wall, struct Rack **racks);
-void op_and(struct Wall *wall, struct Rack **racks);
-void op_or(struct Wall *wall, struct Rack **racks);
-void op_xor(struct Wall *wall, struct Rack **racks);
-void op_lesser(struct Wall *wall, struct Rack **racks);
-void op_greater(struct Wall *wall, struct Rack **racks);
-void op_equals(struct Wall *wall, struct Rack **racks);
-void op_duplicate(struct Wall *wall, struct Rack **racks);
-void op_remove(struct Wall *wall, struct Rack **racks);
-void op_move(struct Wall *wall, struct Rack **racks);
-void op_reverse(struct Wall *wall, struct Rack **racks);
-void op_start_loop(struct Tape *tape, struct Wall *wall, struct Rack **racks);
-void op_end_loop(struct Tape *tape, struct Wall *wall, struct Rack **racks);
-void op_start_ternary(struct Tape *tape, struct Wall *wall, struct Rack **racks);
-void op_switch_ternary(struct Tape *tape, struct Wall *wall, struct Rack **racks);
-void op_start_string(struct Tape *tape, struct Wall *wall, struct Rack **racks);
-void op_print_num(struct Wall *wall, struct Rack **racks);
-void op_print_ascii(struct Wall *wall, struct Rack **racks);
-void op_ask_ascii(struct Wall *wall, struct Rack **racks);
-void op_random(struct Wall *wall, struct Rack **racks);
+void op_insert_num(int number);
+void op_add(void);
+void op_mult(void);
+void op_div(void);
+void op_mod(void);
+void op_sub(void);
+void op_not(void);
+void op_and(void);
+void op_or(void);
+void op_xor(void);
+void op_lesser(void);
+void op_greater(void);
+void op_equals(void);
+void op_duplicate(void);
+void op_remove(void);
+void op_reverse(void);
+void psop_move(void);
+void psop_carry(void);
+void op_start_loop(void);
+void op_end_loop(void);
+void psop_skip_ternary(void);
+void psop_right_ternary(void);
+void op_switch_ternary(void);
+void op_start_string(void);
+void op_print_num(void);
+void op_print_ascii(void);
+void op_ask_ascii(void);
+void op_random(void);
 
 #endif

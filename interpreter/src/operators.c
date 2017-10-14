@@ -1,447 +1,300 @@
-#include "main.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include "operators.h"
+#include "data.h"
+#include "memory.h"
+#include "checks.h"
 
-void op_insert_zero(struct Wall *wall, struct Rack **racks)
+void op_insert_num(int number)
 {
-	++racks[wall->cur]->ind;
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0x0;
+	slide_index(1);
+	set_shelf(0, number);
 }
 
-void op_insert_one(struct Wall *wall, struct Rack **racks)
+void op_add(void)
 {
-	++racks[wall->cur]->ind;
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0x1;
+	set_shelf(-1, (get_shelf(-1)+get_shelf(0)));
+	set_shelf(0, 0);
+	slide_index(-1);
 }
 
-void op_insert_two(struct Wall *wall, struct Rack **racks)
+void op_sub(void)
 {
-	++racks[wall->cur]->ind;
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0x2;
+	set_shelf(-1, (get_shelf(-1)-get_shelf(0)));
+	set_shelf(0, 0);
+	slide_index(-1);
 }
 
-void op_insert_three(struct Wall *wall, struct Rack **racks)
+void op_mult(void)
 {
-	++racks[wall->cur]->ind;
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0x3;
+	set_shelf(-1, (get_shelf(-1)*get_shelf(0)));
+	set_shelf(0, 0);
+	slide_index(-1);
 }
 
-void op_insert_four(struct Wall *wall, struct Rack **racks)
+void op_div(void)
 {
-	++racks[wall->cur]->ind;
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0x4;
+	set_shelf(-1, (get_shelf(-1)/get_shelf(0)));
+	set_shelf(0, 0);
+	slide_index(-1);
 }
 
-void op_insert_five(struct Wall *wall, struct Rack **racks)
+void op_mod(void)
 {
-	++racks[wall->cur]->ind;
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0x5;
+	set_shelf(-1, (get_shelf(-1)%get_shelf(0)));
+	set_shelf(0, 0);
+	slide_index(-1);
 }
 
-void op_insert_six(struct Wall *wall, struct Rack **racks)
+void op_not(void)
 {
-	++racks[wall->cur]->ind;
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0x6;
+	set_shelf(0, !(get_shelf(0)));
 }
 
-void op_insert_seven(struct Wall *wall, struct Rack **racks)
+void op_and(void)
 {
-	++racks[wall->cur]->ind;
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0x7;
+	set_shelf(-1, (get_shelf(-1) && get_shelf(0)));
+	set_shelf(0, 0);
+	slide_index(-1);
 }
 
-void op_insert_eight(struct Wall *wall, struct Rack **racks)
+void op_or(void)
 {
-	++racks[wall->cur]->ind;
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0x8;
+	set_shelf(-1, (get_shelf(-1) || get_shelf(0)));
+	set_shelf(0, 0);
+	slide_index(-1);
 }
 
-void op_insert_nine(struct Wall *wall, struct Rack **racks)
+void op_xor(void)
 {
-	++racks[wall->cur]->ind;
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0x9;
+	set_shelf(-1, (get_shelf(-1) || get_shelf(0)) &&
+	(get_shelf(-1) && get_shelf(0)));
+	set_shelf(0, 0);
+	slide_index(-1);
 }
 
-void op_insert_a(struct Wall *wall, struct Rack **racks)
+void op_lesser(void)
 {
-	++racks[wall->cur]->ind;
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0xa;
+	set_shelf(-1, (get_shelf(-1) < get_shelf(0)));
+	set_shelf(0, 0);
+	slide_index(-1);
 }
 
-void op_insert_b(struct Wall *wall, struct Rack **racks)
+void op_greater(void)
 {
-	++racks[wall->cur]->ind;
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0xb;
+	set_shelf(-1, (get_shelf(-1) > get_shelf(0)));
+	set_shelf(0, 0);
+	slide_index(-1);
 }
 
-void op_insert_c(struct Wall *wall, struct Rack **racks)
+void op_equals(void)
 {
-	++racks[wall->cur]->ind;
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0xc;
+	set_shelf(-1, (get_shelf(-1) == get_shelf(0)));
+	set_shelf(0, 0);
+	slide_index(-1);
 }
 
-void op_insert_d(struct Wall *wall, struct Rack **racks)
+void op_duplicate(void)
 {
-	++racks[wall->cur]->ind;
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0xd;
+	slide_index(1);
+	set_shelf(0, get_shelf(-1));
 }
 
-void op_insert_e(struct Wall *wall, struct Rack **racks)
+void op_remove(void)
 {
-	++racks[wall->cur]->ind;
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0xe;
+	set_shelf(0, 0);
+	slide_index(1);
 }
 
-void op_insert_f(struct Wall *wall, struct Rack **racks)
+void psop_move(void)
 {
-	++racks[wall->cur]->ind;
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0xf;
+	set_pre(get_cur());
+	set_cur(get_shelf(-1));
+	set_shelf(-1, 0);
+	slide_pre_index(-2);
 }
 
-void op_insert_cur(struct Wall *wall, struct Rack **racks)
+void psop_carry(void)
 {
-	++racks[wall->cur]->ind;
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = wall->cur;
-}
-
-void op_insert_pre(struct Wall *wall, struct Rack **racks)
-{
-	++racks[wall->cur]->ind;
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = wall->pre;
-}
-
-void op_insert_ind(struct Wall *wall, struct Rack **racks)
-{
-	++racks[wall->cur]->ind;
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] =
-	racks[wall->cur]->ind;
-}
-
-void op_add(struct Wall *wall, struct Rack **racks)
-{
-	racks[wall->cur]->shelf[racks[wall->cur]->ind-1] +=
-	racks[wall->cur]->shelf[racks[wall->cur]->ind];
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0;
-	--racks[wall->cur]->ind;
-}
-
-void op_sub(struct Wall *wall, struct Rack **racks)
-{
-	racks[wall->cur]->shelf[racks[wall->cur]->ind-1] -=
-	racks[wall->cur]->shelf[racks[wall->cur]->ind];
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0;
-	--racks[wall->cur]->ind;
-}
-
-void op_mult(struct Wall *wall, struct Rack **racks)
-{
-	racks[wall->cur]->shelf[racks[wall->cur]->ind-1] *=
-	racks[wall->cur]->shelf[racks[wall->cur]->ind];
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0;
-	--racks[wall->cur]->ind;
-}
-
-void op_div(struct Wall *wall, struct Rack **racks)
-{
-	racks[wall->cur]->shelf[racks[wall->cur]->ind-1] /=
-	racks[wall->cur]->shelf[racks[wall->cur]->ind];
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0;
-	--racks[wall->cur]->ind;
-}
-
-void op_mod(struct Wall *wall, struct Rack **racks)
-{
-	racks[wall->cur]->shelf[racks[wall->cur]->ind-1] %=
-	racks[wall->cur]->shelf[racks[wall->cur]->ind];
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0;
-	--racks[wall->cur]->ind;
-}
-
-void op_not(struct Wall *wall, struct Rack **racks)
-{
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] =
-	!(racks[wall->cur]->shelf[racks[wall->cur]->ind]);
-}
-
-void op_and(struct Wall *wall, struct Rack **racks)
-{
-	racks[wall->cur]->shelf[racks[wall->cur]->ind-1] =
-	(racks[wall->cur]->shelf[racks[wall->cur]->ind-1] &&
-	racks[wall->cur]->shelf[racks[wall->cur]->ind]);
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0;
-	--racks[wall->cur]->ind;
-}
-
-void op_or(struct Wall *wall, struct Rack **racks)
-{
-	racks[wall->cur]->shelf[racks[wall->cur]->ind-1] =
-	(racks[wall->cur]->shelf[racks[wall->cur]->ind-1] ||
-	racks[wall->cur]->shelf[racks[wall->cur]->ind]);
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0;
-	--racks[wall->cur]->ind;
-}
-
-void op_xor(struct Wall *wall, struct Rack **racks)
-{
-	racks[wall->cur]->shelf[racks[wall->cur]->ind-1] =
-	((racks[wall->cur]->shelf[racks[wall->cur]->ind-1] ||
-	racks[wall->cur]->shelf[racks[wall->cur]->ind]) &&
-	(racks[wall->cur]->shelf[racks[wall->cur]->ind-1] &&
-	racks[wall->cur]->shelf[racks[wall->cur]->ind]));
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0;
-	--racks[wall->cur]->ind;
-}
-
-void op_lesser(struct Wall *wall, struct Rack **racks)
-{
-	racks[wall->cur]->shelf[racks[wall->cur]->ind-1] =
-	(racks[wall->cur]->shelf[racks[wall->cur]->ind-1] <
-	racks[wall->cur]->shelf[racks[wall->cur]->ind]);
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0;
-	--racks[wall->cur]->ind;
-}
-
-void op_greater(struct Wall *wall, struct Rack **racks)
-{
-	racks[wall->cur]->shelf[racks[wall->cur]->ind-1] =
-	(racks[wall->cur]->shelf[racks[wall->cur]->ind-1] >
-	racks[wall->cur]->shelf[racks[wall->cur]->ind]);
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0;
-	--racks[wall->cur]->ind;
-}
-
-void op_equals(struct Wall *wall, struct Rack **racks)
-{
-	racks[wall->cur]->shelf[racks[wall->cur]->ind-1] =
-	(racks[wall->cur]->shelf[racks[wall->cur]->ind-1] ==
-	racks[wall->cur]->shelf[racks[wall->cur]->ind]);
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0;
-	--racks[wall->cur]->ind;
-}
-
-void op_duplicate(struct Wall *wall, struct Rack **racks)
-{
-	racks[wall->cur]->shelf[racks[wall->cur]->ind+1] =
-	racks[wall->cur]->shelf[racks[wall->cur]->ind];
-	++racks[wall->cur]->ind;
-}
-
-void op_remove(struct Wall *wall, struct Rack **racks)
-{
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0;
-	--racks[wall->cur]->ind;
-}
-
-void op_move(struct Wall *wall, struct Rack **racks)
-{
-	if(racks[wall->cur]->shelf[racks[wall->cur]->ind] == 0) {
-		wall->pre = wall->cur;
-		wall->cur = racks[wall->cur]->shelf[racks[wall->cur]->ind-1];
-		racks[wall->pre]->shelf[racks[wall->pre]->ind-1] = 0;
-		racks[wall->pre]->ind -= 2;
+	int i;
+	int amount;
+	int dest;
+	amount = get_shelf(0);
+	dest = get_shelf(-1);
+	set_shelf(0, 0);
+	set_shelf(-1, 0);
+	slide_index(-2);
+	for(i = 0; i < amount; ++i) {
+		set_foreign_shelf(dest, (1+i), get_shelf((-(amount-1)+i)));
+		slide_foreign_index(dest, 1);
 	}
-	else {
-		int i;
-		int amount;
-		int dest;
-		amount = racks[wall->cur]->shelf[racks[wall->cur]->ind];
-		dest = racks[wall->cur]->shelf[racks[wall->cur]->ind-1];
-		racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0;
-		racks[wall->cur]->shelf[racks[wall->cur]->ind-1] = 0;
-		racks[wall->cur]->ind -= 2;
-		for(i = 0; i < amount; ++i) {
-			racks[dest]->shelf[racks[dest]->ind+(1+i)] =
-			racks[wall->cur]->shelf[racks[wall->cur]->ind-(amount-1)+i];
-			++racks[wall->cur]->ind;
-		}
-		for( i = 0; i < amount; ++i ) {
-			racks[wall->cur]->shelf[racks[wall->cur]->ind-1] = 0;
-			--racks[wall->cur]->ind;
-		}
-		wall->pre = wall->cur;
-		wall->cur = dest;
+	for( i = 0; i < amount; ++i ) {
+		set_shelf(-1, 0);
+		slide_index(-1);
 	}
+	set_pre(get_cur());
+	set_cur(dest);
 }
 
-void op_reverse(struct Wall *wall, struct Rack **racks)
+void op_reverse(void)
 {
 	int i;
 	int j;
 	int temp;
-	j = racks[wall->cur]->shelf[racks[wall->cur]->ind];
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0;
-	--racks[wall->cur]->ind;
+	j = get_shelf(0);
+	slide_index(-1);
 	for(i = 0; i < (j/2); ++i) {
-		temp = racks[wall->cur]->shelf[racks[wall->cur]->ind-i];
-		racks[wall->cur]->shelf[racks[wall->cur]->ind+i] =
-		racks[wall->cur]->shelf[racks[wall->cur]->ind-(j-i)+1];
-		racks[wall->cur]->shelf[racks[wall->cur]->ind-(j-i)+1] = temp;
+		temp = get_shelf(-i);
+		set_shelf(-i, get_shelf((-(j-i)+1)));
+		set_shelf((-(j-i)+1), temp);
 	}
 }
 
-void op_start_loop(struct Tape *tape, struct Wall *wall, struct Rack **racks)
+void op_start_loop(void)
 {
-	if((racks[wall->cur]->shelf[racks[wall->cur]->ind] == 0) ||
-	(racks[wall->cur]->ind < 0)) {
-		int loop;
-		loop = 0;
-		++tape->step;
-		while((tape->tok[tape->step] != ']') && (loop != 0)) {
-			if(tape->tok[tape->step] == '[') {
-				++loop;
-			}
-			else if(tape->tok[tape->step] == ']') {
-				--loop;
-				if( loop == 0 )
-					--tape->step;
-			}
-			++tape->step;
+	int loop;
+	loop = 1;
+	slide_tape(1);
+	while((get_token() != ']') && (loop != 0)) {
+		if(get_token() == '[') {
+			++loop;
+		} else if(get_token() == ']') {
+			--loop;
+			if(loop == 0)
+				slide_tape(-1);
 		}
+		slide_tape(1);
 	}
 }
 
-void op_end_loop(struct Tape *tape, struct Wall *wall, struct Rack **racks)
+void op_end_loop(void)
 {
-	if(racks[wall->cur]->ind < 0) {
-	}
-	else if(racks[wall->cur]->shelf[racks[wall->cur]->ind] == 0 ) {
-		--racks[wall->cur]->ind;
-	}
-	else {
-		int out;
-		int loop;
-		out = 0;
-		loop = 1;
-		while(out == 0) {
-			--tape->step;
-			if(racks[wall->cur]->ind < 0 ) {
+	int out;
+	int loop;
+	out = 0;
+	loop = 1;
+	slide_tape(1);
+	while(out == 0) {
+		slide_tape(-1);
+		if(get_token() == ']') {
+			++loop;
+		} else if(get_token() == '[') {
+			--loop;
+			if(loop == 0)
 				out = 1;
-			}
-			else {
-				if(tape->tok[tape->step] == ']') {
-					++loop;
-				}
-				else if(tape->tok[tape->step] == '[') {
-					--loop;
-					if(loop == 0)
-						out = 1;
-				}
-			}
 		}
 	}
 }
 
-void op_start_ternary(struct Tape *tape, struct Wall *wall, struct Rack **racks)
-{
-	if(racks[wall->cur]->shelf[racks[wall->cur]->ind] == 0) {
-		--racks[wall->cur]->ind;
-	}
-	else if(racks[wall->cur]->shelf[racks[wall->cur]->ind] < 0) {
-		int out;
-		int tern;
-		out = 0;
-		tern = 1;
-		racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0;
-		--racks[wall->cur]->ind;
-		while(out == 0) {
-			++tape->step;
-			if(tape->tok[tape->step] == '{') {
-				++tern;
-			}
-			else if(tape->tok[tape->step] == '}') {
-				--tern;
-				if(tern == 0)
-					out = 1;
-			}
-		}
-	}
-	else {
-		int out;
-		int tern;
-		out = 0;
-		tern = 0;
-		racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0;
-		--racks[wall->cur]->ind;
-		while(out == 0) {
-			++tape->step;
-			if(tape->tok[tape->step] == '{') {
-				++tern;
-			}
-			else if(tape->tok[tape->step] == '}') {
-				--tern;
-			}
-			else if(tape->tok[tape->step] == '_') {
-				if(tern == 0)
-					out = 1;
-			}
-		}
-	}
-}
-
-void op_switch_ternary(struct Tape *tape, struct Wall *wall, struct Rack **racks)
+void psop_skip_ternary(void)
 {
 	int out;
 	int tern;
+	out = 0;
 	tern = 1;
+	set_shelf(0, 0);
+	slide_index(-1);
 	while(out == 0) {
-		++tape->step;
-		if(tape->tok[tape->step] == '{') {
+		slide_tape(1);
+		if(get_token() == '{') {
 			++tern;
-		}
-		else if(tape->tok[tape->step] == '}') {
+		} else if(get_token() == '}') {
 			--tern;
-			if( tern == 0 )
+			if(tern == 0)
 				out = 1;
 		}
 	}
 }
 
-void op_start_string(struct Tape *tape, struct Wall *wall, struct Rack **racks)
+
+void psop_right_ternary(void)
+{
+	int out;
+	int tern;
+	out = 0;
+	tern = 0;
+	set_shelf(0, 0);
+	slide_index(-1);
+	while(out == 0) {
+		slide_tape(1);
+		if(get_token() == '{') {
+			++tern;
+		} else if(get_token() == '}') {
+			--tern;
+		} else if(get_token() == '_') {
+			if(tern == 0)
+				out = 1;
+		}
+	}
+}
+
+void op_switch_ternary(void)
+{
+	int out;
+	int tern;
+	out = 0;
+	tern = 1;
+	while(out == 0) {
+		slide_tape(1);
+		if(get_token() == '{') {
+			++tern;
+		} else if(get_token() == '}') {
+			--tern;
+			if(tern == 0)
+				out = 1;
+		}
+	}
+}
+
+void op_start_string(void)
 {
 	int out;
 	out = 0;
 	while(out == 0) {
-		++tape->step;
-		if( tape->tok[tape->step] == ')' ) {
+		slide_tape(1);
+		if(get_token() == ')') {
 			out = 1;
-		}
-		else {
-			++racks[wall->cur]->ind;
-			racks[wall->cur]->shelf[racks[wall->cur]->ind] = tape->tok[tape->step];
+		} else {
+			if(height_check(get_index(), get_height()))
+				grow_rack();
+			slide_index(1);
+			set_shelf(0, get_token());
 		}
 	}
 }
 
-void op_print_num(struct Wall *wall, struct Rack **racks)
+void op_print_num(void)
+{
+	printf( "%i", get_shelf(0));
+	set_shelf(0, 0);
+	slide_index(-1);
+}
+
+void op_print_ascii(void)
+{
+	printf( "%c", (char)get_shelf(0));
+	set_shelf(0, 0);
+	slide_index(-1);
+}
+
+void op_ask_ascii(void)
 {
 	char chara;
-	++racks[wall->cur]->ind;
+	slide_index(1);
 	scanf("%c", &chara);
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = (int)chara;
+	set_shelf(0, (int)chara);
 }
 
-void op_print_ascii(struct Wall *wall, struct Rack **racks)
-{
-	printf( "%c", (char)racks[wall->cur]->shelf[racks[wall->cur]->ind]);
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0;
-	--racks[wall->cur]->ind;
-}
-
-void op_ask_ascii(struct Wall *wall, struct Rack **racks)
-{
-	printf( "%i", (char)racks[wall->cur]->shelf[racks[wall->cur]->ind]);
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = 0;
-	--racks[wall->cur]->ind;
-}
-
-void op_random(struct Wall *wall, struct Rack **racks)
+void op_random(void)
 {
 	int div;
 	int temp;
 	time_t secs;
-	div = RAND_MAX/(racks[wall->cur]->shelf[racks[wall->cur]->ind]+1);
+	div = RAND_MAX/get_shelf(0);
 	srand((unsigned)time(&secs));
 	do {
-		temp = rand() / div;
-	} while(temp > racks[wall->cur]->shelf[racks[wall->cur]->ind]);
-	racks[wall->cur]->shelf[racks[wall->cur]->ind] = temp;
+		temp = rand()/div;
+	} while(temp > get_shelf(0));
+	set_shelf(0, temp);
 }
