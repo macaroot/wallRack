@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "files.h"
-#include "data.h"
+#include "primitives.h"
 #include "memory.h"
 
 /* File handling */
@@ -13,8 +13,7 @@ void fill_raw(FILE *file)
 		set_raw(i, chara);
 		++i;
 		if(i >= get_raw_length()) {
-			double_raw_length();
-			realloc_raw();
+			mem_grow_raw();
 		}
 	}
 	set_raw(i, '\0');
@@ -44,10 +43,8 @@ int fill_tokens(void)
 		} else if(mainraw == '(') {
 			set_token(j, '(');
 			++j;
-			if(j >= get_token_length()) {
-				double_token_length();
-				realloc_tokens();
-			}
+			if(j >= get_token_length())
+				mem_grow_tokens();
 			while(get_raw(i+dev) != ')') {
 				if(get_raw(i+dev) == '\0') {
 					printf( "\n\nError: String end was not found while tokenizing file.\n" );
@@ -55,19 +52,15 @@ int fill_tokens(void)
 				}
 				set_token(j, get_raw(i+dev));
 				++j;
-				if(j >= get_token_length()) {
-					double_token_length();
-					realloc_tokens();
-				}
+				if(j >= get_token_length())
+					mem_grow_tokens();
 				++leap;
 				++dev;
 			}
 			set_token(j, ')');
 			++j;
-			if(j >= get_token_length()) {
-				double_token_length();
-				realloc_tokens();
-			}
+			if(j >= get_token_length())
+				mem_grow_tokens();
 			++leap;
 			dev = 1;
 		} else if(mainraw == '0' || mainraw == '1' ||
@@ -92,6 +85,8 @@ int fill_tokens(void)
 		mainraw == '}' || mainraw == '_' ||
 		mainraw == '\'' || mainraw == '\"' ||
 		mainraw == '`' || mainraw == '\?') {
+			if(j >= get_token_length())
+				mem_grow_tokens();
 			set_token(j, mainraw);
 			++j;
 		}
@@ -101,10 +96,8 @@ int fill_tokens(void)
 		printf("\nError: No recognizable characters.\n");
 		goto fail;
 	}
-	if((j+1) >= get_token_length()) {
-		double_token_length();
-		realloc_tokens();
-	}
+	if((j+1) >= get_token_length())
+		mem_grow_tokens();
 	set_token(j, '\0');
 	return(1);
 fail:
@@ -117,11 +110,12 @@ int parse_file(FILE *file)
 		printf("\n\nError: Could not open file\n");
 		return(0);
 	}
+	mem_init_wall_rack();
 	fill_raw(file);
 	fclose(file);
 	if(!fill_tokens())
 		goto fail;
-	wipe_raw();
+	mem_wipe_raw();
 	return(1);
 fail:
 	return(0);

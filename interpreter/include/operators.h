@@ -3,6 +3,9 @@
 
 /* wallRack operators */
 void op_insert_num(int number);
+void op_insert_cur(void);
+void op_insert_pre(void);
+void op_insert_index(void);
 void op_add(void);
 void op_mult(void);
 void op_div(void);

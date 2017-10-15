@@ -1,6 +1,7 @@
 #ifndef DISPLAY_H
 #define DISPLAY_H
 
-void display_wall_rack(void);
+/* Hook */
+void display_wall_rack(int lapse, int *snap);
 
 #endif

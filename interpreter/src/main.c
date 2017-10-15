@@ -107,10 +107,8 @@
  * 	:: r[i] = rand( 0 - r[i] );
  */
 #include <stdio.h>
-#include "main.h"
-#include "data.h"
 #include "files.h"
-#include "interp.h"
+#include "interpreter.h"
 
 /* main */
 int main(int argc, char* argv[])
@@ -119,7 +117,6 @@ int main(int argc, char* argv[])
 		printf("\n\nError: Provide program file.\nUsage: %s program 054\n", argv[0]);
 		goto fail;
 	}
-	init_wall_rack();
 	if(!parse_file(fopen(argv[1], "r"))) {
 		printf("\n\nError: Could not open file\n");
 		goto fail;

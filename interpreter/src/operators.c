@@ -2,14 +2,31 @@
 #include <stdlib.h>
 #include <time.h>
 #include "operators.h"
-#include "data.h"
+#include "primitives.h"
 #include "memory.h"
-#include "checks.h"
 
 void op_insert_num(int number)
 {
 	slide_index(1);
 	set_shelf(0, number);
+}
+
+void op_insert_cur(void)
+{
+	slide_index(1);
+	set_shelf(0, get_cur());
+}
+
+void op_insert_pre(void)
+{
+	slide_index(1);
+	set_shelf(0, get_pre());
+}
+
+void op_insert_index(void)
+{
+	slide_index(1);
+	set_shelf(0, get_index());
 }
 
 void op_add(void)
@@ -106,13 +123,29 @@ void op_remove(void)
 	set_shelf(0, 0);
 	slide_index(1);
 }
+/*
+ *void psop_adjust_used_width(void)
+ *{
+ *	if(get_shelf(-1) < 0){
+ *		if((get_index() < 0) && (get_used_width() <= get_cur())) {
+ *			int tmpWidth;
+ *			tmpWidth = (get_cur()-1);
+ *			while((get_foreign_index(tmpWidth) > -1) && (tmpWidth > 0))
+ *				--tmpWidth;
+ *			set_used_width(tmpWidth);
+ *		}
+ *	} else {
+ *		
+ *	}
+ *}
+ */
 
 void psop_move(void)
 {
 	set_pre(get_cur());
 	set_cur(get_shelf(-1));
-	set_shelf(-1, 0);
-	slide_pre_index(-2);
+	set_foreign_shelf(get_pre(), -1, 0);
+	slide_foreign_index(get_pre(), -2);
 }
 
 void psop_carry(void)
@@ -129,8 +162,8 @@ void psop_carry(void)
 		set_foreign_shelf(dest, (1+i), get_shelf((-(amount-1)+i)));
 		slide_foreign_index(dest, 1);
 	}
-	for( i = 0; i < amount; ++i ) {
-		set_shelf(-1, 0);
+	for(i = 0; i < amount; ++i) {
+		set_shelf(0, 0);
 		slide_index(-1);
 	}
 	set_pre(get_cur());
@@ -174,9 +207,12 @@ void op_end_loop(void)
 	int loop;
 	out = 0;
 	loop = 1;
-	slide_tape(1);
 	while(out == 0) {
 		slide_tape(-1);
+		if(get_step() < 0) {
+			printf("\n\nError: no loop start");
+			break;
+		}
 		if(get_token() == ']') {
 			++loop;
 		} else if(get_token() == '[') {
@@ -256,8 +292,8 @@ void op_start_string(void)
 		if(get_token() == ')') {
 			out = 1;
 		} else {
-			if(height_check(get_index(), get_height()))
-				grow_rack();
+			if(get_index() > (get_height()-2))
+				mem_grow_rack();
 			slide_index(1);
 			set_shelf(0, get_token());
 		}
