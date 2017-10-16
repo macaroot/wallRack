@@ -121,7 +121,7 @@ void op_duplicate(void)
 void op_remove(void)
 {
 	set_shelf(0, 0);
-	slide_index(1);
+	slide_index(-1);
 }
 /*
  *void psop_adjust_used_width(void)
@@ -142,10 +142,12 @@ void op_remove(void)
 
 void psop_move(void)
 {
+	int dest;
+	dest = get_shelf(-1);
+	set_shelf(-1, 0);
+	slide_index(-2);
 	set_pre(get_cur());
-	set_cur(get_shelf(-1));
-	set_foreign_shelf(get_pre(), -1, 0);
-	slide_foreign_index(get_pre(), -2);
+	set_cur(dest);
 }
 
 void psop_carry(void)
@@ -159,8 +161,8 @@ void psop_carry(void)
 	set_shelf(-1, 0);
 	slide_index(-2);
 	for(i = 0; i < amount; ++i) {
-		set_foreign_shelf(dest, (1+i), get_shelf((-(amount-1)+i)));
 		slide_foreign_index(dest, 1);
+		set_foreign_shelf(dest, (0), get_shelf((-(amount-1)+i)));
 	}
 	for(i = 0; i < amount; ++i) {
 		set_shelf(0, 0);
@@ -186,18 +188,22 @@ void op_reverse(void)
 
 void op_start_loop(void)
 {
+	int out;
 	int loop;
+	out = 0;
 	loop = 1;
-	slide_tape(1);
-	while((get_token() != ']') && (loop != 0)) {
+	while(out == 0) {
+		slide_tape(1);
+		if(get_step() > get_token_length()) {
+			printf("\n\nerror: no loop end\n");
+		}
 		if(get_token() == '[') {
 			++loop;
 		} else if(get_token() == ']') {
 			--loop;
 			if(loop == 0)
-				slide_tape(-1);
+				out = 1;
 		}
-		slide_tape(1);
 	}
 }
 
@@ -210,7 +216,7 @@ void op_end_loop(void)
 	while(out == 0) {
 		slide_tape(-1);
 		if(get_step() < 0) {
-			printf("\n\nError: no loop start");
+			printf("\n\nError: no loop start\n");
 			break;
 		}
 		if(get_token() == ']') {
@@ -229,8 +235,6 @@ void psop_skip_ternary(void)
 	int tern;
 	out = 0;
 	tern = 1;
-	set_shelf(0, 0);
-	slide_index(-1);
 	while(out == 0) {
 		slide_tape(1);
 		if(get_token() == '{') {
@@ -302,14 +306,14 @@ void op_start_string(void)
 
 void op_print_num(void)
 {
-	printf( "%i", get_shelf(0));
+	printf("%i", get_shelf(0));
 	set_shelf(0, 0);
 	slide_index(-1);
 }
 
 void op_print_ascii(void)
 {
-	printf( "%c", (char)get_shelf(0));
+	printf("%c", (char)get_shelf(0));
 	set_shelf(0, 0);
 	slide_index(-1);
 }

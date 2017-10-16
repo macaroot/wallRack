@@ -11,6 +11,10 @@ int interpret(void)
 	int snap;
 	snap = 0;
 	while(get_token() != '\0') {
+		if(get_index() < -1) {
+			printf("\n\nindex error");
+			goto fail;
+		}
 		switch(get_token()) {
 		case '0' :
 			if(get_index() > (get_height()-2))
@@ -172,21 +176,21 @@ int interpret(void)
 			break;
 		case '<' :
 			if(get_index() < 1) {
-				printf("\n\n<error");
+				printf("\n\n<error\n");
 				goto fail;
 			}
 			op_lesser();
 			break;
 		case '>' :
 			if(get_index() < 1) {
-				printf("\n\n>error");
+				printf("\n\n>error\n");
 				goto fail;
 			}
 			op_greater();
 			break;
 		case '=' :
 			if(get_index() < 1) {
-				printf("\n\n=error");
+				printf("\n\n=error\n");
 				goto fail;
 			}
 			op_equals();
@@ -198,19 +202,28 @@ int interpret(void)
 			break;
 		case '.' :
 			if(get_index() < 0) {
-				printf("\n\n=error");
+				printf("\n\n=error\n");
 				goto fail;
 			}
 			op_remove();
 			break;
 		case '$' :
-			if(get_shelf(0) < 0) {
-				printf("\n\n$error\n");
+			if(get_index() < 1) {
+				printf("\n\n$error bottom\n");
 				goto fail;
 			}
-/*			if(get_shelf(-1) != get_cur())
+			else if(get_shelf(0) < 0) {
+				printf("\n\n$error -carry\n");
+				goto fail;
+			}
+			else if(get_shelf(0) >= get_index()) {
+				printf("\n\n$error too many carry\n");
+				goto fail;
+			}
+/*	decwall		if(get_shelf(-1) != get_cur())
  *				psop_adjust_used_width;
- */			while(get_shelf(-1) > (get_width()-1))
+ */	/* grow forrak if((car+forind) > (forheight-2)) */
+			while(get_shelf(-1) > (get_width()-1))
 				mem_grow_wall();
 			if(get_shelf(0) == 0)
 				psop_move();
@@ -220,7 +233,16 @@ int interpret(void)
  *				mem_reduce_wall();
  */			break;
 		case '\\' :
-			op_reverse();
+			if(get_index() < 1) {
+				printf("\n\n\\error bottom\n");
+				goto fail;
+			}
+			if(get_index() == 1) {
+				set_shelf(0,0);
+				slide_index(-1);
+			} else {
+				op_reverse();
+			}
 			break;
 		case '[' :
 			if((get_index() < 0) || (get_shelf(0) == 0))
@@ -235,9 +257,9 @@ int interpret(void)
 				op_end_loop();
 			break;
 		case '{' :
-			if(get_shelf(0) < 0)
+			if(get_index() < 0)
 				psop_skip_ternary();
-			else if(!(get_shelf(0) == 0))
+			else if(get_shelf(0) == 0)
 				slide_index(-1);
 			else
 				psop_right_ternary();
@@ -248,12 +270,10 @@ int interpret(void)
 			op_switch_ternary();
 			break;
 		case '(' :
-			if(get_index() > (get_height()-2))
-				mem_grow_rack();
 			op_start_string();
 			break;
 		case ')' :
-			printf("\n\n)error");
+			printf("\n\n)error\n");
 			goto fail;
 			break;
 		case '\'' :
