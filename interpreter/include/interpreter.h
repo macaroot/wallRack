@@ -2,6 +2,6 @@
 #define INTERPRETER_H
 
 /* Hook */
-int interpret(void);
+int interpret(int snap);
 
 #endif

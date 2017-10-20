@@ -110,18 +110,54 @@
 #include "files.h"
 #include "interpreter.h"
 
+int confirm_snap(char *argv, int *snap)
+{
+	char digit;
+	int mult;
+	int i;
+	*snap = 0;
+	mult = 1;
+	i = 0;
+	digit = argv[i];
+	while(digit != '\0') {
+		if(digit < 48 || digit > 57) {
+			printf("\n\nError: use only digits in the second \
+option to determine snap\n");
+			goto fail;
+		}
+		++i;
+		digit = argv[i];
+	}
+	--i;
+	while(i != -1) {
+		digit = (argv[i]-48);
+		*snap += (digit*mult);
+		mult *= 10;
+		--i;
+	}
+	return(1);
+fail:
+	return(0);
+}
+
 /* main */
 int main(int argc, char* argv[])
 {
-	if(argc > 2) {
-		printf("\n\nError: Provide program file.\nUsage: %s program 054\n", argv[0]);
+	int snap;
+	if(argc > 3 || argc < 2) {
+		printf("\n\nError: Provide a program file, and optionally \
+give a number to get a screenshot of the wallRack at a certain cycle.\
+\nExample usage: %s program 54\n", argv[0]);
 		goto fail;
 	}
+	if(argc == 3)
+		if(!confirm_snap(argv[2], &snap))
+			goto fail;
 	if(!parse_file(fopen(argv[1], "r"))) {
 		printf("\n\nError: Could not open file\n");
 		goto fail;
 	}
-	if(!interpret())
+	if(!interpret(snap))
 		goto fail;
 	printf("\n\nSuccessful exit.\n");
 	return(0);

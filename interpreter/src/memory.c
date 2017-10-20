@@ -91,6 +91,7 @@ void init_state(void)
 	state.startWidth = 0x4;
 	state.startLength = 0x40;
 	state.lapse = 0;
+	state.snap = -1;
 	state.error = none;
 }
 

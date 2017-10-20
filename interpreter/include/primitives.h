@@ -4,6 +4,10 @@
 /* Interface for primitive data manipulation */
 int get_lapse(void);
 void set_lapse(int lapse);
+void slide_lapse(int slide);
+int get_snap(void);
+void set_snap(int snap);
+void slide_snap(int slide);
 void set_raw(int number, char chara);
 char get_raw(int number);
 int get_raw_length(void);

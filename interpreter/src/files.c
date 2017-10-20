@@ -4,7 +4,7 @@
 #include "memory.h"
 
 /* File handling */
-void fill_raw(FILE *file)
+int fill_raw(FILE *file)
 {
 	int chara;
 	int i;
@@ -16,7 +16,12 @@ void fill_raw(FILE *file)
 			mem_grow_raw();
 		}
 	}
-	set_raw(i, '\0');
+	if(i == 0)
+		goto fail;
+	set_raw((i-1), '\0');
+	return(1);
+fail:
+	return(0);
 }
 
 int fill_tokens(void)
@@ -47,7 +52,8 @@ int fill_tokens(void)
 				mem_grow_tokens();
 			while(get_raw(i+dev) != ')') {
 				if(get_raw(i+dev) == '\0') {
-					printf( "\n\nError: String end was not found while tokenizing file.\n" );
+					printf( "\n\nError: String end was \
+not found while tokenizing file.\n" );
 					goto fail;
 				}
 				set_token(j, get_raw(i+dev));
@@ -108,15 +114,21 @@ int parse_file(FILE *file)
 {
 	if(!file) {
 		printf("\n\nError: Could not open file\n");
-		return(0);
+		goto fail;
 	}
 	mem_init_wall_rack();
-	fill_raw(file);
+	if(!fill_raw(file)) {
+		printf("\n\nError: Empty file\n");
+		fclose(file);
+		goto fail;
+	}
 	fclose(file);
 	if(!fill_tokens())
 		goto fail;
 	mem_wipe_raw();
 	return(1);
 fail:
+	mem_wipe_raw();
+	mem_wipe_rest();
 	return(0);
 }

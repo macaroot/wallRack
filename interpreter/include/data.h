@@ -6,13 +6,14 @@ enum Error {
 	none,
 	bottom,
 	edge
-} errorContext;
+} error;
 
 struct State {
 	int startHeight;
 	int startWidth;
 	int startLength;
 	int lapse;
+	int snap;
 	enum Error error;
 } state;
 

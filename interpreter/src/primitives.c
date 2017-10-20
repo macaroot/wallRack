@@ -12,6 +12,26 @@ void set_lapse(int lapse)
 	state.lapse = lapse;
 }
 
+void slide_lapse(int slide)
+{
+	state.lapse += slide;
+}
+
+int get_snap(void)
+{
+	return(state.snap);
+}
+
+void set_snap(int snap)
+{
+	state.snap = snap;
+}
+
+void slide_snap(int slide)
+{
+	state.snap += slide;
+}
+
 char get_raw(int number)
 {
 	return(tape.raw[number]);

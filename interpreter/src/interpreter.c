@@ -6,10 +6,9 @@
 #include "display.h"
 
 /* Interpreting tokens */
-int interpret(void)
+int interpret(int snap)
 {
-	int snap;
-	snap = 0;
+	set_snap(snap);
 	while(get_token() != '\0') {
 		if(get_index() < -1) {
 			printf("\n\nindex error");
@@ -301,9 +300,9 @@ int interpret(void)
 			op_random();
 			break;
 		}
-		if(snap == get_lapse())
-			display_wall_rack(get_lapse(), &snap);
-		set_lapse((get_lapse()+1));
+		if(get_snap() == get_lapse())
+			display_wall_rack();
+		slide_lapse(1);
 		slide_tape(1);
 	}
 	mem_wipe_rest();
